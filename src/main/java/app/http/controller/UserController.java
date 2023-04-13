@@ -21,8 +21,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-@Slf4j
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -30,12 +28,6 @@ public class UserController {
 
     private final UserService userService;
     private final CompanyService companyService;
-
-    @ExceptionHandler(Exception.class)
-    public String handleException(Exception exception) {
-        log.error("Failed to return response", exception);
-        return "error500";
-    }
 
     @GetMapping()
     public String findAll(Model model, UserFilter filter, Pageable pageable) {

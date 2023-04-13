@@ -10,11 +10,14 @@ import app.mapper.UserCreateEditMapper;
 import app.mapper.UserReadMapper;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +32,7 @@ public class UserService {
     private final ApplicationEventPublisher eventPublisher;
     private final UserCreateEditMapper userCreateEditMapper;
     private final UserReadMapper userReadMapper;
+    private final ImageService imageService;
 
     public List<UserReadDto> findAll() {
         return userRepository.findAll().stream()
@@ -36,7 +40,7 @@ public class UserService {
                 .toList();
     }
 
-    public Page<UserReadDto> findAll (UserFilter filter, Pageable pageable){
+    public Page<UserReadDto> findAll(UserFilter filter, Pageable pageable) {
         Predicate predicate = QPredicates.builder()
                 .add(filter.firstName(), user.firstName::containsIgnoreCase)
                 .add(filter.lastName(), user.lastName::containsIgnoreCase)
@@ -46,6 +50,7 @@ public class UserService {
         return userRepository.findAll(predicate, pageable)
                 .map(userReadMapper::map);
     }
+
     public Optional<UserReadDto> findById(Long id) {
         return userRepository.findById(id).map(userReadMapper::map);
     }
@@ -53,7 +58,10 @@ public class UserService {
     @Transactional
     public UserReadDto create(UserCreateEditDto userDto) {
         return Optional.of(userDto)
-                .map(userCreateEditMapper::map)
+                .map(dto -> {
+                    uploadImage(dto.getImage());
+                    return userCreateEditMapper.map(dto);
+                })
                 .map(userRepository::save)
                 .map(userReadMapper::map)
                 .orElseThrow();
@@ -62,9 +70,26 @@ public class UserService {
     @Transactional
     public Optional<UserReadDto> update(Long id, UserCreateEditDto userDto) {
         return userRepository.findById(id)
-                .map(entity -> userCreateEditMapper.map(userDto, entity))
+                .map(entity -> {
+                    uploadImage(userDto.getImage());
+                    return userCreateEditMapper.map(userDto, entity);
+                })
                 .map(userRepository::saveAndFlush)
                 .map(userReadMapper::map);
+    }
+
+    @SneakyThrows
+    private void uploadImage(MultipartFile image) {
+        if (!image.isEmpty())
+            imageService.upload(image.getOriginalFilename(), image.getInputStream());
+
+    }
+
+    public Optional<byte[]> findAvatar(Long id) {
+        return userRepository.findById(id)
+                .map(User::getImage)
+                .filter(StringUtils::hasText)
+                .flatMap(imageService::get);
     }
 
     @Transactional
