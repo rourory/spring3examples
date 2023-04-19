@@ -1,17 +1,25 @@
 package app.integration.http.controller;
 
-import app.dto.UserCreateEditDto;
+import app.database.entity.Role;
 import app.integration.IntegrationTestBase;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static app.dto.UserCreateEditDto.Fields.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.testcontainers.shaded.org.hamcrest.collection.IsCollectionWithSize.*;
 
 @RequiredArgsConstructor
 @AutoConfigureMockMvc
@@ -19,6 +27,17 @@ class UserControllerTest extends IntegrationTestBase {
 
 
     private final MockMvc mockMvc;
+
+//    @BeforeEach
+//    void init() {
+//        List<GrantedAuthority> roles = Arrays.asList(Role.ADMIN, Role.USER);
+//        User testUser = new User("test@gmail.com", "test", roles);
+//        TestingAuthenticationToken testingAuthenticationToken = new TestingAuthenticationToken(testUser, testUser.getPassword(), roles);
+//
+//        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+//        securityContext.setAuthentication(testingAuthenticationToken);
+//        SecurityContextHolder.setContext(securityContext);
+//    }
 
     @Test
     void findAll() throws Exception {

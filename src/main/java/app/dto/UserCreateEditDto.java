@@ -4,6 +4,7 @@ import app.database.entity.Role;
 import app.validation.UserInfo;
 import app.validation.groups.CreateAction;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Value;
@@ -20,6 +21,9 @@ public class UserCreateEditDto {
 
     @Email
     String username;
+
+    @NotBlank(groups = CreateAction.class)
+    String rawPassword;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate birthDate;

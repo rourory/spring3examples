@@ -13,6 +13,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -52,12 +53,14 @@ public class UserServiceIT extends IntegrationTestBase {
     void create() {
         UserCreateEditDto userDto = new UserCreateEditDto(
                 "testUsername",
+                "test",
                 LocalDate.of(1999, 12, 12),
                 "testFirstname",
                 "testLastname",
                 Role.ADMIN,
-                COMPANY_ID
-        );
+                COMPANY_ID,
+                new MockMultipartFile("test", new byte[0])
+                );
 
         UserReadDto actualResult = userService.create(userDto);
 
@@ -74,11 +77,13 @@ public class UserServiceIT extends IntegrationTestBase {
     void update() {
         UserCreateEditDto userDto = new UserCreateEditDto(
                 "testUsername",
+                "test",
                 LocalDate.of(1999, 12, 12),
                 "testFirstname",
                 "testLastname",
                 Role.ADMIN,
-                COMPANY_ID
+                COMPANY_ID,
+                new MockMultipartFile("test", new byte[0])
         );
 
         UserReadDto actualResult = Optional.of(userService.update(IVAN_ID, userDto))

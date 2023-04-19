@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Fragments</title>
+</head>
+<body>
+<div th:fragment="header" style="margin-bottom: 30px; border-bottom: solid aqua 2px">
+    <span th:text="${#authentication.principal.username}">Username</span>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
+    <div th:insert="~{fragment :: locale}"></div>
+</div>
+
+<div th:fragment="locale" >
+    <form action="" onchange="this.form.submit()">
+        <select name="lang">
+            <option></option>
+            <option value="en">English</option>
+            <option value="ru">Russian</option>
+        </select>
+    </form>
+</div>
+
+</body>
+</html>

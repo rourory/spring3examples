@@ -5,12 +5,20 @@
     <title>Login</title>
 </head>
 <body>
-<form action="/login" method="post">
-    <label for="username">
+<div th:insert="~{fragment :: locale}"></div> <br>
+
+<form th:action="@{/login}" method="post">
+
+<!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
+
+    <div style="color: red" th:if="${param.error}">
+        Bad credentials
+    </div>
+    <label for="username"><span th:text="#{login.username}">Username:</span>
         <input id="username" type="text" name="username">
     </label>
     <br>
-    <label for="password">
+    <label for="password"><span th:text="#{login.password}">Password:</span>
         <input id="password" type="password" name="password">
     </label>
     <br>
