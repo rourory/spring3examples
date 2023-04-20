@@ -1,15 +1,13 @@
-package app.aop;
+package logging.aop;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Aspect
-@Component
 public class FirstAspect {
 
     /*
@@ -31,7 +29,7 @@ public class FirstAspect {
         check annotation on methods of Controller layer
         we can use operands like logic and, logic or and logic not
      */
-    @Pointcut("CommonPointcut.isControllerLayer() && @annotation(org.springframework.web.bind.annotation.GetMapping)")
+    @Pointcut("CommonPointcut.isControllerLayer() && @annotation(org.springframework.*.bind.annotation.GetMapping)")
     public void hasGetMapping() {
 
     }
@@ -51,7 +49,7 @@ public class FirstAspect {
     /*
         check annotation on the param type
      */
-    @Pointcut("CommonPointcut.isControllerLayer() && @args(app.validation.UserInfo, ..)")
+    @Pointcut("CommonPointcut.isControllerLayer() && @args(*.validation.UserInfo, ..)")
     public void hasUserInfoParamAnnotation() {
 
     }
@@ -68,7 +66,7 @@ public class FirstAspect {
     /*
         execution(modifiers-pattern? return-type-pattern declaring-type-pattern?name-pattern(param-pattern) throws)
      */
-    @Pointcut("execution(public * app.service.*Service.findById(*))")
+    @Pointcut("execution(public * *.service.*Service.findById(*))")
     public void anyFindByIdServiceMethod() {
 
     }
